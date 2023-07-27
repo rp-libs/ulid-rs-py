@@ -1,0 +1,50 @@
+[project]
+name = "ulid-rs-py"
+authors = [
+    {name = "vvanglro", email = "vvanglro@gmail.com"}
+]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT license",
+    "Operating System :: MacOS",
+    "Operating System :: Microsoft :: Windows",
+    "Operating System :: POSIX :: Linux",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: Implementation :: CPython",
+    "Programming Language :: Python :: Implementation :: PyPy",
+    "Programming Language :: Python",
+    "Programming Language :: Rust",
+    "Topic :: Software Development :: Libraries :: Python Modules"
+]
+
+dynamic = [
+    "description",
+    "keywords",
+    "license",
+    "readme",
+    "version"
+]
+requires-python = ">=3.8"
+
+[project.urls]
+Homepage = "https://github.com/vvanglro/ulid-rs-py"
+Funding = "https://github.com/vvanglro/ulid-rs-py"
+Source = "https://github.com/vvanglro/ulid-rs-py"
+
+[project.optional-dependencies]
+test = [
+    "pytest~=7.1.2"
+]
+
+[tool.maturin]
+features = ["pyo3/extension-module"]
+module-name = "ulid._ulid_rs_py"
+
+[build-system]
+requires = ["maturin>=1.1,<2.0"]
+build-backend = "maturin"
