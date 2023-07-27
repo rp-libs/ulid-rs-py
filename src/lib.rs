@@ -49,10 +49,10 @@ impl PyUlid {
 }
 
 #[pyfunction]
-fn gen_ulid(_py: Python) -> PyResult<String> {
+fn new(_py: Python) -> PyResult<PyUlid> {
     _py.allow_threads(|| {
         let ulid = Ulid::new();
-        Ok(ulid.to_string())
+        Ok(PyUlid::new(ulid))
     })
 }
 
@@ -107,14 +107,14 @@ fn from_parts(_py: Python, timestamp: u64, randomness: u128) -> PyResult<PyUlid>
 
 #[pymodule]
 fn _ulid_rs_py(_py: Python, module: &PyModule) -> PyResult<()> {
-    module.add_function(wrap_pyfunction!(gen_ulid, module)?)?;
+    module.add_function(wrap_pyfunction!(new, module)?)?;
     module.add_function(wrap_pyfunction!(from_string, module)?)?;
     module.add_function(wrap_pyfunction!(from_uuid, module)?)?;
     module.add_function(wrap_pyfunction!(from_timestamp, module)?)?;
     module.add_function(wrap_pyfunction!(from_parts, module)?)?;
     module.add_class::<PyUlid>()?;
     module.add("DecodeError", _py.get_type::<DecodeError>())?;
-    module.add("InvalidUuidError", _py.get_type::<DecodeError>())?;
+    module.add("InvalidUuidError", _py.get_type::<InvalidUuidError>())?;
 
     #[cfg(not(PyPy))]
     pyo3::prepare_freethreaded_python();
