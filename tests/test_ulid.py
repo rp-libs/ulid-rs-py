@@ -1,7 +1,16 @@
 import uuid
 import pytest
 from datetime import datetime
-from ulid import new, PyUlid, from_string, from_uuid, from_parts, from_timestamp, DecodeError, InvalidUuidError
+from ulid import (
+    new,
+    PyUlid,
+    from_string,
+    from_uuid,
+    from_parts,
+    from_timestamp,
+    DecodeError,
+    InvalidUuidError,
+)
 
 
 def test_new():
@@ -20,7 +29,24 @@ def test_from_string():
     py_ulid = from_string("01D39ZY06FGSCTVN4T2V9PKHFZ")
     assert repr(py_ulid) == "<ULID('01D39ZY06FGSCTVN4T2V9PKHFZ')>"
     assert type(py_ulid) is PyUlid
-    assert py_ulid.bytes() == [1, 104, 211, 255, 0, 207, 134, 89, 173, 212, 154, 22, 211, 105, 197, 255]
+    assert py_ulid.bytes() == [
+        1,
+        104,
+        211,
+        255,
+        0,
+        207,
+        134,
+        89,
+        173,
+        212,
+        154,
+        22,
+        211,
+        105,
+        197,
+        255,
+    ]
     assert py_ulid.randomness() == 634451394732979059803647
     assert py_ulid.timestamp() == 1549744931023
     assert py_ulid.str() == "01D39ZY06FGSCTVN4T2V9PKHFZ"

@@ -99,7 +99,7 @@ fn from_timestamp(_py: Python, value: &PyDateTime) -> PyResult<PyUlid> {
 #[pyfunction]
 #[pyo3(signature = (timestamp, randomness))]
 fn from_parts(_py: Python, timestamp: u64, randomness: u128) -> PyResult<PyUlid> {
-    _py.allow_threads(||  {
+    _py.allow_threads(|| {
         let ulid = Ulid::from_parts(timestamp, randomness);
         Ok(PyUlid::new(ulid))
     })
