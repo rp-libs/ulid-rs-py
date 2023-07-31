@@ -21,5 +21,5 @@ repos:
         name: rust-fmt
         description: Check if all files follow the rust-fmt style
         entry: rustfmt --check --color always
-        language: system
+        language: rust
         pass_filenames: false
