@@ -1,4 +1,4 @@
-use chrono::{Timelike, TimeZone, Utc};
+use chrono::{TimeZone, Timelike, Utc};
 use pyo3::create_exception;
 use pyo3::exceptions::PyValueError;
 use pyo3::prelude::*;
@@ -25,7 +25,7 @@ impl PyUlid {
     }
 
     pub fn bytes(&self) -> PyResult<[u8; 16]> {
-        Ok(self.0.0.to_be_bytes())
+        Ok(self.0 .0.to_be_bytes())
     }
 
     pub fn timestamp(&self) -> PyResult<u64> {
@@ -43,7 +43,7 @@ impl PyUlid {
     pub fn increment(&self) -> PyResult<Option<PyUlid>> {
         match self.0.increment() {
             None => Ok(None),
-            Some(resp) => { Ok(Option::from(self::PyUlid::new(resp))) }
+            Some(resp) => Ok(Option::from(self::PyUlid::new(resp))),
         }
     }
 }
@@ -61,7 +61,7 @@ fn new(_py: Python) -> PyResult<PyUlid> {
 fn from_string(_py: Python, value: &str) -> PyResult<PyUlid> {
     match _py.allow_threads(|| Ulid::from_string(&value)) {
         Ok(ulid_result) => Ok(PyUlid::new(ulid_result)),
-        Err(err) => Err(DecodeError::new_err(err.to_string()))
+        Err(err) => Err(DecodeError::new_err(err.to_string())),
     }
 }
 
@@ -69,10 +69,8 @@ fn from_string(_py: Python, value: &str) -> PyResult<PyUlid> {
 #[pyo3(signature = (value))]
 fn from_uuid(_py: Python, value: &str) -> PyResult<PyUlid> {
     match _py.allow_threads(|| Uuid::parse_str(&value)) {
-        Ok(instance_uuid) => {
-            Ok(PyUlid::new(ulid::Ulid::from(instance_uuid)))
-        }
-        Err(err) => Err(InvalidUuidError::new_err(err.to_string()))
+        Ok(instance_uuid) => Ok(PyUlid::new(ulid::Ulid::from(instance_uuid))),
+        Err(err) => Err(InvalidUuidError::new_err(err.to_string())),
     }
 }
 
@@ -87,7 +85,9 @@ fn from_timestamp(_py: Python, value: &PyDateTime) -> PyResult<PyUlid> {
     let second = value.get_second() as u32;
     let microsecond = value.get_microsecond() as u32;
     _py.allow_threads(|| {
-        let dt = Utc.with_ymd_and_hms(year, month, day, hour, minute, second).unwrap()
+        let dt = Utc
+            .with_ymd_and_hms(year, month, day, hour, minute, second)
+            .unwrap()
             .with_nanosecond(microsecond)
             .unwrap();
         let system_time = dt.into();
