@@ -20,6 +20,7 @@ repos:
       - id: rust-fmt
         name: rust-fmt
         description: Check if all files follow the rust-fmt style
+        # https://github.com/pre-commit-ci/issues/issues/121
         entry: rustfmt --check --color always
         language: rust
         pass_filenames: false

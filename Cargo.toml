@@ -10,8 +10,8 @@ edition = "2021"
 keywords = ["ulid"]
 
 readme = "README.md"
-homepage = "https://github.com/vvanglro/ulid-rs-py"
-repository = "https://github.com/vvanglro/ulid-rs-py"
+homepage = "https://github.com/rp-libs/ulid-rs-py"
+repository = "https://github.com/rp-libs/ulid-rs-py"
 
 include = [
     "/Cargo.toml",
