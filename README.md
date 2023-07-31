@@ -63,4 +63,4 @@ assert py_ulid.str() == py_ulid_tt.str()
 ---
 
 ## Benchmarks
-For details, see [benchmark](tests/benchmarks/README.md).
+For details, see [benchmark](https://github.com/rp-libs/ulid-rs-py/blob/main/tests/benchmarks/README.md).
