@@ -7,7 +7,7 @@ num = 10000
 
 # pip install ulid-py~=1.1.0
 # Since the package names are the same, you need to go to site-package to change the ulid of ulid-py to ulid_py.
-# pip install pytest-benchmark~=4.0.0 ulid-rs-py
+# pip install 'pytest-benchmark[histogram]~=4.0.0' ulid-rs-py
 # pytest tests/benchmarks/benchmark.py  --benchmark-histogram
 
 
