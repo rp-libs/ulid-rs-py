@@ -23,6 +23,8 @@ include = [
     "/tests",
     "!__pycache__",
     "!tests/.pytest_cache",
+    "!tests/.benchmarks",
+    "!tests/benchmarks",
     "!*.so",
 ]
 
