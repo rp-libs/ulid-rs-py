@@ -3,7 +3,7 @@
 [![Package version](https://img.shields.io/pypi/v/ulid-rs-py?color=%2334D058&label=pypi%20package)](https://pypi.org/project/ulid-rs-py/)
 [![Supported Python versions](https://img.shields.io/pypi/pyversions/ulid-rs-py.svg?color=%2334D058)](https://pypi.org/project/ulid-rs-py/)
 
-Use rust [ulid](https://github.com/dylanhart/ulid-rs) crate to rewrite python ulid library.
+Python wrapper for Rust [ulid](https://github.com/dylanhart/ulid-rs) crate
 
 ---
 
