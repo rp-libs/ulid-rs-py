@@ -38,14 +38,6 @@ pyo3 = { version = "0.19.1", features = ["extension-module"] }
 ulid = { version = "1.0.0", features = ["uuid"] }
 uuid = "1.4.1"
 
-[[test]]
-name = "test"
-path = "tests/test.rs"
-
-[[bin]]
-name = "test"
-path = "src/bin/test.rs"
-
 [build-dependencies]
 pyo3-build-config = { version = "0.19.1", features = ["resolve-config"] }
 
