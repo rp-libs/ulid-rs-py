@@ -1,6 +1,6 @@
 [package]
 name = "ulid-rs-py"
-version = "0.1.2"
+version = "0.2.0"
 description = "Use rust ulid crate to rewrite python ulid library"
 authors = [
     "vvanglro <vvanglro@gmail.com>"
@@ -16,6 +16,7 @@ repository = "https://github.com/rp-libs/ulid-rs-py"
 include = [
     "/Cargo.toml",
     "/pyproject.toml",
+    "/build.rs",
     "/LICENSE",
     "/README.md",
     "/src",
@@ -34,12 +35,12 @@ crate-type = ["cdylib"]
 
 [dependencies]
 chrono = "0.4.26"
-pyo3 = { version = "0.19.1", features = ["extension-module"] }
+pyo3 = { version = "=0.20.1", features = ["extension-module", "generate-import-lib"] }
 ulid = { version = "1.0.0", features = ["uuid"] }
 uuid = "1.4.1"
 
 [build-dependencies]
-pyo3-build-config = { version = "0.19.1", features = ["resolve-config"] }
+pyo3-build-config = { version = "=0.20.1", features = ["resolve-config"] }
 
 [profile.release]
 codegen-units = 1
