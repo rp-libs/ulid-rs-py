@@ -49,7 +49,7 @@ def test_from_string():
         255,
     ]
     assert py_ulid.randomness() == 634451394732979059803647
-    assert py_ulid.timestamp() == 1549744931023
+    assert py_ulid.timestamp() == 1549744931.0
     assert py_ulid.str() == "01D39ZY06FGSCTVN4T2V9PKHFZ"
     assert py_ulid.increment().str() == "01D39ZY06FGSCTVN4T2V9PKHG0"
 
