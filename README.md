@@ -18,8 +18,8 @@ pip install ulid-rs-py
 ## Quickstart
 
 ```python
-from datetime import datetime
-from ulid import new, from_uuid, from_parts, from_timestamp, from_string, PyUlid
+from datetime import datetime, timezone
+from ulid import new, from_uuid, from_parts, from_timestamp, from_datetime, from_string, PyUlid
 
 # Generate ulid
 py_ulid: PyUlid = new()
@@ -45,16 +45,23 @@ print(py_ulid.str())
 assert py_ulid.str() == ulid_value
 
 # From timestamp
-datetime_value = datetime(2023, 7, 28)
-py_ulid = from_timestamp(datetime_value)
+timestamp_value = datetime(2023, 7, 28).timestamp()
+py_ulid = from_timestamp(timestamp_value)
 print(py_ulid.str())
 print(py_ulid.timestamp())
-assert py_ulid.timestamp() == 1690502400000
+assert py_ulid.timestamp() == timestamp_value
 print(py_ulid.randomness())
+
+# From datetime
+datetime_value = datetime(2023, 7, 28, hour=1, minute=20, tzinfo=timezone.utc)
+py_ulid = from_datetime(datetime_value)
+assert py_ulid.str()
+assert py_ulid.datetime() == datetime(2023, 7, 28, hour=1, minute=20)
+assert py_ulid.timestamp() == datetime_value.timestamp()
 
 # From parts
 datetime_value = datetime(2023, 7, 28)
-py_ulid_tt = from_timestamp(datetime_value)
+py_ulid_tt = from_timestamp(datetime_value.timestamp())
 py_ulid = from_parts(py_ulid_tt.timestamp(), py_ulid_tt.randomness())
 assert py_ulid.str() == py_ulid_tt.str()
 

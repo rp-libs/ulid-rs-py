@@ -1,6 +1,6 @@
 import uuid
 import pytest
-from datetime import datetime
+from datetime import datetime, timezone
 from ulid import (
     new,
     PyUlid,
@@ -10,6 +10,7 @@ from ulid import (
     from_timestamp,
     DecodeError,
     InvalidUuidError,
+    from_datetime,
 )
 
 
@@ -67,13 +68,22 @@ def test_from_uuid():
 
 
 def test_from_timestamp():
-    py_ulid = from_timestamp(datetime(1999, 1, 1))
+    timestamp = datetime(1999, 1, 1).timestamp()
+    py_ulid = from_timestamp(timestamp)
     assert py_ulid.str()
     assert type(py_ulid) is PyUlid
-    assert py_ulid.timestamp() == 915148800000
+    assert py_ulid.timestamp() == timestamp
     assert py_ulid.randomness()
     assert py_ulid.bytes()
     assert py_ulid.increment()
+
+
+def test_from_datetime():
+    datetime_value = datetime(2023, 7, 28, hour=1, minute=20, tzinfo=timezone.utc)
+    py_ulid = from_datetime(datetime_value)
+    assert py_ulid.str()
+    assert py_ulid.datetime() == datetime(2023, 7, 28, hour=1, minute=20)
+    assert py_ulid.timestamp() == datetime_value.timestamp()
 
 
 def test_from_parts():

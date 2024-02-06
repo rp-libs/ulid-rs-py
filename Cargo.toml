@@ -1,6 +1,6 @@
 [package]
 name = "ulid-rs-py"
-version = "0.2.0"
+version = "0.2.1"
 description = "Use rust ulid crate to rewrite python ulid library"
 authors = [
     "vvanglro <vvanglro@gmail.com>"
