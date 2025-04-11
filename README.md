@@ -18,6 +18,7 @@ pip install ulid-rs-py
 ## Quickstart
 
 ```python
+import uuid
 from datetime import datetime, timezone
 from ulid import new, from_uuid, from_parts, from_timestamp, from_datetime, from_string, PyUlid
 
@@ -40,7 +41,7 @@ assert py_ulid.randomness() + 1 == py_ulid.increment().randomness()
 # From uuid
 uuid_value = "771a3bce-02e9-4428-a68e-b1e7e82b7f9f"
 ulid_value = "3Q38XWW0Q98GMAD3NHWZM2PZWZ"
-py_ulid = from_uuid(uuid_value)
+py_ulid = from_uuid(uuid.UUID(uuid_value))
 print(py_ulid.str())
 assert py_ulid.str() == ulid_value
 
