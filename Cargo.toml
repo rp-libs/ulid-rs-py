@@ -36,7 +36,7 @@ crate-type = ["cdylib"]
 [dependencies]
 chrono = "0.4.26"
 pyo3 = { version = "=0.24.1", features = ["extension-module", "generate-import-lib", "uuid"] }
-ulid = { version = "1.1.2", features = ["uuid"] }
+ulid = { version = "1.2.1", features = ["uuid"] }
 uuid = "1.4.1"
 
 [build-dependencies]
