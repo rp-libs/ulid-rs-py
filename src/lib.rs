@@ -26,7 +26,8 @@ impl PyUlid {
     }
 
     pub fn bytes(&self) -> PyResult<[u8; 16]> {
-        Ok(self.0 .0.to_be_bytes())
+        // https://github.com/PyO3/pyo3/issues/4996
+        Ok(self.0.to_bytes())
     }
 
     pub fn timestamp(&self) -> PyResult<f64> {
