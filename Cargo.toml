@@ -35,8 +35,8 @@ crate-type = ["cdylib"]
 
 [dependencies]
 chrono = "0.4.26"
-pyo3 = { version = "=0.20.1", features = ["extension-module", "generate-import-lib"] }
-ulid = { version = "1.1.2", features = ["uuid"] }
+pyo3 = { version = "=0.24.1", features = ["extension-module", "generate-import-lib", "uuid"] }
+ulid = { version = "1.2.1", features = ["uuid"] }
 uuid = "1.4.1"
 
 [build-dependencies]
@@ -50,3 +50,6 @@ lto = "fat"
 opt-level = 3
 panic = "abort"
 strip = true
+
+[lints.rust]
+unexpected_cfgs = { level = "warn", check-cfg = ['cfg(PyPy)'] }

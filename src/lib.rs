@@ -34,7 +34,7 @@ impl PyUlid {
         Ok(datetime.timestamp() as f64)
     }
 
-    pub fn datetime<'p>(&self, _py: Python<'p>) -> PyResult<&'p PyDateTime> {
+    pub fn datetime<'p>(&self, _py: Python<'p>) -> PyResult<Bound<'p, PyDateTime>> {
         let datetime: DateTime<Utc> = self.0.datetime().into();
         PyDateTime::new(
             _py,
@@ -84,16 +84,13 @@ fn from_string(_py: Python, value: &str) -> PyResult<PyUlid> {
 
 #[pyfunction]
 #[pyo3(signature = (value))]
-fn from_uuid(_py: Python, value: &str) -> PyResult<PyUlid> {
-    match _py.allow_threads(|| Uuid::parse_str(&value)) {
-        Ok(instance_uuid) => Ok(PyUlid::new(Ulid::from(instance_uuid))),
-        Err(err) => Err(InvalidUuidError::new_err(err.to_string())),
-    }
+fn from_uuid(_py: Python, value: Uuid) -> PyResult<PyUlid> {
+    _py.allow_threads(|| Ok(PyUlid::new(Ulid::from(value))))
 }
 
 #[pyfunction]
 #[pyo3(signature = (value))]
-fn from_datetime(_py: Python, value: &PyDateTime) -> PyResult<PyUlid> {
+fn from_datetime(_py: Python, value: &Bound<PyDateTime>) -> PyResult<PyUlid> {
     let year = value.get_year();
     let month = value.get_month() as u32;
     let day = value.get_day() as u32;
@@ -133,7 +130,7 @@ fn from_parts(_py: Python, timestamp: f64, randomness: u128) -> PyResult<PyUlid>
 }
 
 #[pymodule]
-fn _ulid_rs_py(_py: Python, module: &PyModule) -> PyResult<()> {
+fn _ulid_rs_py(_py: Python, module: &Bound<'_, PyModule>) -> PyResult<()> {
     module.add_function(wrap_pyfunction!(new, module)?)?;
     module.add_function(wrap_pyfunction!(from_string, module)?)?;
     module.add_function(wrap_pyfunction!(from_uuid, module)?)?;

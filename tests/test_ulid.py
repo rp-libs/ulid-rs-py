@@ -9,7 +9,6 @@ from ulid import (
     from_parts,
     from_timestamp,
     DecodeError,
-    InvalidUuidError,
     from_datetime,
 )
 
@@ -30,24 +29,8 @@ def test_from_string():
     py_ulid = from_string("01D39ZY06FGSCTVN4T2V9PKHFZ")
     assert repr(py_ulid) == "<ULID('01D39ZY06FGSCTVN4T2V9PKHFZ')>"
     assert type(py_ulid) is PyUlid
-    assert py_ulid.bytes() == [
-        1,
-        104,
-        211,
-        255,
-        0,
-        207,
-        134,
-        89,
-        173,
-        212,
-        154,
-        22,
-        211,
-        105,
-        197,
-        255,
-    ]
+    print(py_ulid.bytes())
+    assert py_ulid.bytes() == b"\x01h\xd3\xff\x00\xcf\x86Y\xad\xd4\x9a\x16\xd3i\xc5\xff"
     assert py_ulid.randomness() == 634451394732979059803647
     assert py_ulid.timestamp() == 1549744931.0
     assert py_ulid.str() == "01D39ZY06FGSCTVN4T2V9PKHFZ"
@@ -55,8 +38,7 @@ def test_from_string():
 
 
 def test_from_uuid():
-    value = uuid.uuid4().hex
-    py_ulid = from_uuid(value)
+    py_ulid = from_uuid(uuid.uuid4())
     assert repr(py_ulid)
     assert type(py_ulid) is PyUlid
     assert py_ulid.str()
@@ -103,5 +85,5 @@ def test_from_string_decode_error():
 
 
 def test_from_uuid_invalid_uuid_error():
-    with pytest.raises(InvalidUuidError):
+    with pytest.raises(TypeError):
         from_uuid("q")
