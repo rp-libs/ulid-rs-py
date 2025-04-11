@@ -22,16 +22,14 @@ jobs:
       - uses: pyo3/maturin-action@v1
         with:
           maturin-version: v${{ env.MATURIN_VERSION }}
-          command: build
-          args: --release --sdist --interpreter 3.10
-          target: x64
-          manylinux: off
-          container: off
+          rust-toolchain: stable
+          command: sdist
+          args: --out dist
       - name: Upload sdist
         uses: actions/upload-artifact@v4
         with:
-          name: wheels
-          path: target/wheels/*.tar.gz
+          name: dist
+          path: dist
           overwrite: true
 
   wheel-unix:
