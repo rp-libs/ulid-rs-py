@@ -6,7 +6,6 @@ on:
   workflow_dispatch:
 
 env:
-  MATURIN_VERSION: 1.8.3
   PY_ALL: 3.9 3.10 3.11 3.12 3.13 pypy3.9 pypy3.10 pypy3.11
 
 jobs:
@@ -15,106 +14,89 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.10'
       - uses: pyo3/maturin-action@v1
         with:
-          maturin-version: v${{ env.MATURIN_VERSION }}
           rust-toolchain: stable
           command: sdist
           args: --out dist
       - name: Upload sdist
         uses: actions/upload-artifact@v4
         with:
-          name: dist
+          name: dist-sdist
           path: dist
-          overwrite: true
 
-  wheel-unix:
-    name: wheel ${{ matrix.platform || matrix.os }}(${{ matrix.target }}) - ${{ matrix.manylinux || 'auto' }}
-    runs-on: ${{ matrix.os }}-latest
+  wheels:
+    name: wheel ${{ matrix.platform || matrix.os }}(${{ matrix.target }}) - ${{ matrix.manylinux || 'auto' }} - ${{ matrix.allocator || 'auto' }}
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu, macos]
+        os: [ubuntu, macos, windows]
         target: [x86_64, aarch64]
         manylinux: [auto]
+        allocator: [auto]
         include:
           - os: ubuntu
             platform: linux
-          - os: macos
+            target: x86_64
             interpreter: 3.9 3.10 3.11 3.12 3.13 pypy3.9 pypy3.10 pypy3.11
           - os: ubuntu
             platform: linux
             target: aarch64
-            container: messense/manylinux_2_24-cross:aarch64
+            # rust-cross/manylinux2014-cross:aarch64 has issues with `ring`
+            container: ghcr.io/rust-cross/manylinux_2_28-cross:aarch64
+            interpreter: 3.9 3.10 3.11 3.12 3.13 pypy3.9 pypy3.10 pypy3.11
           - os: ubuntu
             platform: linux
+            target: armv7
+            interpreter: 3.9 3.10 3.11 3.12 3.13
+          - os: macos
             target: x86_64
-            manylinux: musllinux_1_1
-          - os: ubuntu
-            platform: linux
+            interpreter: 3.9 3.10 3.11 3.12 3.13 pypy3.9 pypy3.10 pypy3.11
+          - os: macos
             target: aarch64
-            manylinux: musllinux_1_1
+            interpreter: 3.9 3.10 3.11 3.12 3.13 pypy3.9 pypy3.10 pypy3.11
+          - os: windows
+            target: x86_64
+            # pypy build fails with linker error
+            interpreter: 3.9 3.10 3.11 3.12 3.13 pypy3.9 pypy3.10 pypy3.11
         exclude:
           - os: windows
             target: aarch64
+
+    runs-on: ${{ matrix.os }}-latest
     steps:
       - uses: actions/checkout@v4
       - uses: pyo3/maturin-action@v1
         with:
-          maturin-version: v${{ env.MATURIN_VERSION }}
+          rust-toolchain: stable
           command: build
-          args: --release --interpreter ${{ matrix.interpreter || env.PY_ALL }}
+          args: --release --out dist --interpreter ${{ matrix.interpreter || env.PY_ALL }}
           target: ${{ matrix.target }}
           manylinux: ${{ matrix.manylinux || 'auto' }}
           container: ${{ matrix.container }}
+          docker-options: -e CI
       - name: Upload wheels
         uses: actions/upload-artifact@v4
         with:
-          name: wheels
-          path: target/wheels
-          overwrite: true
-
-  wheel-win:
-    runs-on: windows-latest
-    env:
-      PY_ALL: 3.9 3.10 3.11 3.12 3.13 pypy3.9 pypy3.10 pypy3.11
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v4
-        with:
-          python-version: pypy3.9
-      - uses: pyo3/maturin-action@v1
-        with:
-          maturin-version: v${{ env.MATURIN_VERSION }}
-          command: build
-          args: --release --interpreter ${{ env.PY_ALL }}
-          target: x86_64
-          manylinux: auto
-      - name: Upload wheels
-        uses: actions/upload-artifact@v4
-        with:
-          name: wheels
-          path: target/wheels
-          overwrite: true
+          name: dist-${{ matrix.platform || matrix.os }}-${{ matrix.target }}-${{ matrix.manylinux || 'auto' }}-${{ matrix.allocator || 'auto' }}
+          path: dist
 
   release:
     runs-on: ubuntu-latest
-    needs: [ sdist, wheel-unix, wheel-win ]
+    needs: [ sdist, wheels ]
+    environment:
+      name: pypi
+      url: https://pypi.org/p/ulid-rs-py
+    permissions:
+      id-token: write
+
     steps:
       - uses: actions/download-artifact@v4
         with:
-          name: wheels
-      - uses: actions/setup-python@v4
+          pattern: dist-*
+          merge-multiple: true
+          path: dist
+      - name: Publish package to pypi
+        uses: pypa/gh-action-pypi-publish@release/v1
         with:
-          python-version: '3.10'
-      - name: Publish to PyPi
-        env:
-          TWINE_USERNAME: __token__
-          TWINE_PASSWORD: ${{ secrets.PYPI_TOKEN }}
-        run: |
-          pip install --upgrade pip twine
-          twine upload --skip-existing *
+          skip-existing: true
