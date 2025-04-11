@@ -6,8 +6,8 @@ on:
   workflow_dispatch:
 
 env:
-  MATURIN_VERSION: 1.3.0
-  PY_ALL: 3.8 3.9 3.10 3.11 3.12 pypy3.8 pypy3.9 pypy3.10
+  MATURIN_VERSION: 1.8.3
+  PY_ALL: 3.9 3.10 3.11 3.12 3.13 pypy3.9 pypy3.10 pypy3.11
 
 jobs:
   sdist:
@@ -16,7 +16,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: '3.10'
       - uses: pyo3/maturin-action@v1
@@ -46,7 +46,7 @@ jobs:
           - os: ubuntu
             platform: linux
           - os: macos
-            interpreter: 3.8 3.9 3.10 3.11 3.12 pypy3.9 pypy3.10
+            interpreter: 3.9 3.10 3.11 3.12 3.13 pypy3.9 pypy3.10 pypy3.11
           - os: ubuntu
             platform: linux
             target: aarch64
@@ -81,7 +81,7 @@ jobs:
   wheel-win:
     runs-on: windows-latest
     env:
-      PY_ALL: 3.8 3.9 3.10 3.11 3.12 pypy3.8 pypy3.9 pypy3.10
+      PY_ALL: 3.9 3.10 3.11 3.12 3.13 pypy3.9 pypy3.10 pypy3.11
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v4
