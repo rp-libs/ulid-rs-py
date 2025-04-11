@@ -32,6 +32,7 @@ jobs:
         with:
           name: wheels
           path: target/wheels/*.tar.gz
+          overwrite: true
 
   wheel-unix:
     name: wheel ${{ matrix.platform || matrix.os }}(${{ matrix.target }}) - ${{ matrix.manylinux || 'auto' }}
@@ -77,6 +78,7 @@ jobs:
         with:
           name: wheels
           path: target/wheels
+          overwrite: true
 
   wheel-win:
     runs-on: windows-latest
@@ -99,6 +101,7 @@ jobs:
         with:
           name: wheels
           path: target/wheels
+          overwrite: true
 
   release:
     runs-on: ubuntu-latest
