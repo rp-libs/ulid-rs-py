@@ -32,7 +32,7 @@ impl PyUlid {
 
     pub fn timestamp(&self) -> PyResult<f64> {
         let datetime: DateTime<Utc> = self.0.datetime().into();
-        Ok(datetime.timestamp() as f64)
+        Ok(datetime.timestamp_micros() as f64 / 1_000_000.0)
     }
 
     pub fn datetime<'p>(&self, _py: Python<'p>) -> PyResult<Bound<'p, PyDateTime>> {
@@ -45,7 +45,7 @@ impl PyUlid {
             datetime.hour() as u8,
             datetime.minute() as u8,
             datetime.second() as u8,
-            datetime.nanosecond(),
+            datetime.timestamp_subsec_micros(),
             None,
         )
     }
@@ -103,7 +103,7 @@ fn from_datetime(_py: Python, value: &Bound<PyDateTime>) -> PyResult<PyUlid> {
         let dt = Utc
             .with_ymd_and_hms(year, month, day, hour, minute, second)
             .unwrap()
-            .with_nanosecond(microsecond)
+            .with_nanosecond(microsecond * 1000)
             .unwrap();
         let system_time = dt.into();
         let ulid = Ulid::from_datetime(system_time);

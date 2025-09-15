@@ -32,7 +32,8 @@ def test_from_string():
     print(py_ulid.bytes())
     assert py_ulid.bytes() == b"\x01h\xd3\xff\x00\xcf\x86Y\xad\xd4\x9a\x16\xd3i\xc5\xff"
     assert py_ulid.randomness() == 634451394732979059803647
-    assert py_ulid.timestamp() == 1549744931.0
+    assert py_ulid.timestamp() == 1549744931.023
+    assert py_ulid.datetime() == datetime(2019, 2, 9, 20, 42, 11, 23000)
     assert py_ulid.str() == "01D39ZY06FGSCTVN4T2V9PKHFZ"
     assert py_ulid.increment().str() == "01D39ZY06FGSCTVN4T2V9PKHG0"
 
@@ -61,10 +62,10 @@ def test_from_timestamp():
 
 
 def test_from_datetime():
-    datetime_value = datetime(2023, 7, 28, hour=1, minute=20, tzinfo=timezone.utc)
+    datetime_value = datetime(2023, 7, 28, hour=1, minute=20, second=30, microsecond=123000, tzinfo=timezone.utc)
     py_ulid = from_datetime(datetime_value)
     assert py_ulid.str()
-    assert py_ulid.datetime() == datetime(2023, 7, 28, hour=1, minute=20)
+    assert py_ulid.datetime() == datetime(2023, 7, 28, hour=1, minute=20, second=30, microsecond=123000)
     assert py_ulid.timestamp() == datetime_value.timestamp()
 
 
