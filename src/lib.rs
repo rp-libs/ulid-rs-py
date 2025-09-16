@@ -99,11 +99,15 @@ fn from_datetime(_py: Python, value: &Bound<PyDateTime>) -> PyResult<PyUlid> {
     let minute = value.get_minute() as u32;
     let second = value.get_second() as u32;
     let microsecond = value.get_microsecond();
+    // ULID timestamps have millisecond precision only.
+    // Truncate Python microseconds to milliseconds before converting to nanoseconds.
+    let nanos = (microsecond / 1000) * 1_000_000;
+
     _py.allow_threads(|| {
         let dt = Utc
             .with_ymd_and_hms(year, month, day, hour, minute, second)
             .unwrap()
-            .with_nanosecond(microsecond * 1000)
+            .with_nanosecond(nanos)
             .unwrap();
         let system_time = dt.into();
         let ulid = Ulid::from_datetime(system_time);
