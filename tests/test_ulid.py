@@ -62,11 +62,18 @@ def test_from_timestamp():
 
 
 def test_from_datetime():
-    datetime_value = datetime(2023, 7, 28, hour=1, minute=20, second=30, microsecond=123000, tzinfo=timezone.utc)
+    datetime_value = datetime(
+        2023, 7, 28, hour=1, minute=20, second=30, microsecond=123456
+    )
     py_ulid = from_datetime(datetime_value)
     assert py_ulid.str()
-    assert py_ulid.datetime() == datetime(2023, 7, 28, hour=1, minute=20, second=30, microsecond=123000)
-    assert py_ulid.timestamp() == datetime_value.timestamp()
+    # https://github.com/ulid/spec?tab=readme-ov-file#components
+    # 48 bit integer
+    # UNIX-time in milliseconds
+    assert py_ulid.datetime() == datetime(
+        2023, 7, 28, hour=1, minute=20, second=30, microsecond=123000
+    )
+    assert py_ulid.timestamp() == 1690507200.123
 
 
 def test_from_parts():
