@@ -1,3 +1,4 @@
+import math
 import uuid
 import pytest
 from datetime import datetime, timezone
@@ -63,7 +64,14 @@ def test_from_timestamp():
 
 def test_from_datetime():
     datetime_value = datetime(
-        2023, 7, 28, hour=1, minute=20, second=30, microsecond=123456
+        2023,
+        7,
+        28,
+        hour=1,
+        minute=20,
+        second=30,
+        microsecond=123456,
+        tzinfo=timezone.utc,
     )
     py_ulid = from_datetime(datetime_value)
     assert py_ulid.str()
@@ -73,7 +81,7 @@ def test_from_datetime():
     assert py_ulid.datetime() == datetime(
         2023, 7, 28, hour=1, minute=20, second=30, microsecond=123000
     )
-    assert py_ulid.timestamp() == 1690507200.123
+    assert py_ulid.timestamp() == math.floor(datetime_value.timestamp() * 1000) / 1000
 
 
 def test_from_parts():
