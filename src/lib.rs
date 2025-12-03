@@ -77,7 +77,8 @@ fn new(_py: Python) -> PyResult<PyUlid> {
 #[pyfunction]
 #[pyo3(signature = (value))]
 fn from_string(_py: Python, value: &str) -> PyResult<PyUlid> {
-    match _py.detach(|| Ulid::from_string(&value)) {
+    let value = value.to_string();
+    match _py.detach(move || Ulid::from_string(&value)) {
         Ok(ulid_result) => Ok(PyUlid::new(ulid_result)),
         Err(err) => Err(DecodeError::new_err(err.to_string())),
     }
