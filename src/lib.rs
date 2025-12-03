@@ -68,7 +68,7 @@ impl PyUlid {
 
 #[pyfunction]
 fn new(_py: Python) -> PyResult<PyUlid> {
-    _py.allow_threads(|| {
+    _py.detach(|| {
         let ulid = Ulid::new();
         Ok(PyUlid::new(ulid))
     })
@@ -77,7 +77,7 @@ fn new(_py: Python) -> PyResult<PyUlid> {
 #[pyfunction]
 #[pyo3(signature = (value))]
 fn from_string(_py: Python, value: &str) -> PyResult<PyUlid> {
-    match _py.allow_threads(|| Ulid::from_string(&value)) {
+    match _py.detach(|| Ulid::from_string(&value)) {
         Ok(ulid_result) => Ok(PyUlid::new(ulid_result)),
         Err(err) => Err(DecodeError::new_err(err.to_string())),
     }
@@ -86,7 +86,7 @@ fn from_string(_py: Python, value: &str) -> PyResult<PyUlid> {
 #[pyfunction]
 #[pyo3(signature = (value))]
 fn from_uuid(_py: Python, value: Uuid) -> PyResult<PyUlid> {
-    _py.allow_threads(|| Ok(PyUlid::new(Ulid::from(value))))
+    _py.detach(|| Ok(PyUlid::new(Ulid::from(value))))
 }
 
 #[pyfunction]
@@ -103,7 +103,7 @@ fn from_datetime(_py: Python, value: &Bound<PyDateTime>) -> PyResult<PyUlid> {
     // Truncate Python microseconds to milliseconds before converting to nanoseconds.
     let nanos = (microsecond / 1000) * 1_000_000;
 
-    _py.allow_threads(|| {
+    _py.detach(|| {
         let dt = Utc
             .with_ymd_and_hms(year, month, day, hour, minute, second)
             .unwrap()
@@ -118,7 +118,7 @@ fn from_datetime(_py: Python, value: &Bound<PyDateTime>) -> PyResult<PyUlid> {
 #[pyfunction]
 #[pyo3(signature = (value))]
 fn from_timestamp(_py: Python, value: f64) -> PyResult<PyUlid> {
-    _py.allow_threads(|| {
+    _py.detach(|| {
         let system_time = SystemTime::UNIX_EPOCH + Duration::from_secs(value as u64);
         let ulid = Ulid::from_datetime(system_time.into());
         Ok(PyUlid::new(ulid))
@@ -128,7 +128,7 @@ fn from_timestamp(_py: Python, value: f64) -> PyResult<PyUlid> {
 #[pyfunction]
 #[pyo3(signature = (timestamp, randomness))]
 fn from_parts(_py: Python, timestamp: f64, randomness: u128) -> PyResult<PyUlid> {
-    _py.allow_threads(|| {
+    _py.detach(|| {
         let ulid = Ulid::from_parts(timestamp as u64 * 1000, randomness);
         Ok(PyUlid::new(ulid))
     })
@@ -147,7 +147,7 @@ fn _ulid_rs_py(_py: Python, module: &Bound<'_, PyModule>) -> PyResult<()> {
     module.add("InvalidUuidError", _py.get_type::<InvalidUuidError>())?;
 
     #[cfg(not(PyPy))]
-    pyo3::prepare_freethreaded_python();
+    pyo3::Python::initialize();
 
     Ok(())
 }
