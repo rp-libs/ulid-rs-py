@@ -40,7 +40,7 @@ Source = "https://github.com/rp-libs/ulid-rs-py"
 
 [project.optional-dependencies]
 test = [
-    "pytest~=7.1.2"
+    "pytest>=8.3.0"
 ]
 
 [tool.maturin]
