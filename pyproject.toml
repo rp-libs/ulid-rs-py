@@ -16,6 +16,7 @@ classifiers = [
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
     "Programming Language :: Python :: Implementation :: CPython",
     "Programming Language :: Python :: Implementation :: PyPy",
     "Programming Language :: Python",
@@ -39,7 +40,7 @@ Source = "https://github.com/rp-libs/ulid-rs-py"
 
 [project.optional-dependencies]
 test = [
-    "pytest~=7.1.2"
+    "pytest>=8.3.0"
 ]
 
 [tool.maturin]
